@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { ProfileForm } from "./profile-form";
 import { formSchema } from "../schema";
-import { useCurrentChatData } from "../atoms";
+import { useMemoChatData } from "../atoms";
 import { useAtomValue } from "jotai";
 
 export default function UpdateProfile() {
@@ -28,7 +28,7 @@ export default function UpdateProfile() {
   const chatId = Array.isArray(chats) ? chats[0] : chats;
 
   // get profile data from focusedChatAtom to populate form
-  const focusedChatAtom = useCurrentChatData(chatId!);
+  const focusedChatAtom = useMemoChatData(chatId!);
   const focusedChatData = useAtomValue(focusedChatAtom);
 
   // get profile data from server

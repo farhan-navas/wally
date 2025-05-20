@@ -92,10 +92,11 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 <details>
   <summary><strong>UI/UX</strong></summary>
 
+- [ ] improve alert dialog for deleting chat
 - [ ] make sure ui for all pages is exactly 100vh (on all devices!)
 - [ ] fix create-chat page ui (languages currently greyed out)
-- [ ] make sure scroll area in chat page sticks to the bottom
-- [ ] chat area has a down button to scroll down
+- [ ] make sure scroll area in chat page sticks to the bottom (still buggy for beta)
+- [ ] add down button in the chat area for scrolling down
 - [ ] fix scrollRef, make sure page scrolls down all the way when messageStreams render
 - [ ] make entire ui mobile friendly
 

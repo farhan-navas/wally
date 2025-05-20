@@ -35,29 +35,41 @@ import { api } from "~/trpc/react";
 import { useAuth } from "@clerk/nextjs";
 import { useAtom } from "jotai";
 import { chatDataAtom } from "../atoms";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const state = useAuth();
+  // const apiUtils = api.useUtils();
   const [chatData, setChatData] = useAtom(chatDataAtom);
 
   const { data, isLoading } = api.chat.getAllChatHeaders.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
   });
 
   const deleteChatMutation = api.chat.deleteChat.useMutation({
     onSuccess: (data) => {
       console.log("Chat deleted successfully", data);
+      setChatData((prev) => prev.filter((chat) => chat.id !== data.id)); // remove the deleted chat from the chatData atom
+      // void apiUtils.chat.getAllChatHeaders.invalidate(); // invalidate the query to refetch the chat data
     },
     onError: (error) => {
       console.error("Failed to delete chat: ", error);
     },
   });
-
-  function deleteChat(chatId: string) {
-    deleteChatMutation.mutate({ chatId });
-  }
 
   useEffect(() => {
     // set all chatIds and chatData to the atoms, when new data arrives
@@ -97,6 +109,9 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
       setChatData(chatData);
     }
   }, [data, setChatData]);
+
+  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
+  // const deletingChatId = useRef<string | null>(null);
 
   return (
     <Sidebar>
@@ -145,16 +160,56 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side="right" align="start">
-                        <DropdownMenuItem>
-                          <span>Edit Profile</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span onClick={() => deleteChat(chat.id)}>
-                            Delete Profile
-                          </span>
+                        <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setDeletingChatId(chat.id);
+                            console.log(
+                              "Deleting chat with id: ",
+                              chat.id === deletingChatId,
+                            );
+                          }}
+                        >
+                          Delete Profile
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                    <AlertDialog
+                      open={deletingChatId === chat.id}
+                      onOpenChange={(open) => {
+                        // when Radix decides to close (e.g. clicking Cancel or outside), clear the id
+                        if (!open) setDeletingChatId(null);
+                      }}
+                    >
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you sure you want to delete this chat?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel
+                            onClick={() => {
+                              setDeletingChatId(null);
+                            }}
+                          >
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => {
+                              deleteChatMutation.mutate({ chatId: chat.id });
+                              setDeletingChatId(null);
+                            }}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </SidebarMenuItem>
                 ))}
               <SidebarMenuItem>

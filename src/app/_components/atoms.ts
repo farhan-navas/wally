@@ -26,7 +26,7 @@ export const chatDataAtom = atomWithStorage(
   myStorage,
 );
 
-export function useCurrentChatData(chatId: string): Atom<chatDataSchema> {
+export function useMemoChatData(chatId: string): Atom<chatDataSchema> {
   // memoize focusedChatAtom, so only recalculates when chatId changes
   const focusedChatAtom = useMemo(
     () =>

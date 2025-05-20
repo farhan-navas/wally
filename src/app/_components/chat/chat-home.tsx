@@ -22,7 +22,7 @@ import { toast } from "sonner";
 
 import UpdateProfile from "../profile/update-profile";
 import { useAtomValue } from "jotai";
-import { useCurrentChatData } from "../atoms";
+import { useMemoChatData } from "../atoms";
 import { marked } from "marked";
 import { UploadDropzone } from "~/lib/uploadthing";
 import type { Attachment } from "ai";
@@ -60,14 +60,20 @@ export default function ChatHome() {
   const { chats } = useParams();
   const chatId = Array.isArray(chats) ? chats[0] : chats;
 
-  // get profile data from focusedChatDatAatom earlier and set UI
-  const focusedChatData = useCurrentChatData(chatId!);
+  // get profile data from focusedChatDataAtom earlier and set UI
+  const focusedChatData = useMemoChatData(chatId!);
   const focusedChat = useAtomValue(focusedChatData);
   const chatData = focusedChat?.chatData;
 
-  const redHeartLevel = chatData?.heartLevel;
-  const relationship = chatData?.relationship;
-  const name = chatData?.name;
+  const chatQuery = api.chat.getChat.useQuery(chatId ? { chatId } : skipToken, {
+    enabled: !chatData, // only fetch if atom is empty
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  const redHeartLevel = chatData?.heartLevel ?? chatQuery.data?.heartLevel;
+  const relationship = chatData?.relationship ?? chatQuery.data?.relationship;
+  const name = chatData?.name ?? chatQuery.data?.name;
   const grayHeartLevel = redHeartLevel ? 5 - redHeartLevel : 0;
   const profileColor = PROFILE_COLORS[redHeartLevel - 1];
   const profileEmoji = PROFILE_EMOJIS[redHeartLevel - 1];
