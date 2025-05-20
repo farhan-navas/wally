@@ -9,9 +9,11 @@ import Home from "~/app/_components/global/home";
 
 import { SidebarProvider } from "@components/ui/sidebar";
 import { Toaster } from "sonner";
+import JotaiProvider from "./_components/jotai-provider";
+
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import JotaiProvider from "./_components/jotai-provider";
+import { HighlightInit } from "@highlight-run/next/client";
 
 export const metadata: Metadata = {
   title: "Wally",
@@ -27,6 +29,16 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
+          <HighlightInit
+            projectId={"ve6yz9zg"}
+            serviceName="my-nextjs-frontend"
+            tracingOrigins
+            networkRecording={{
+              enabled: true,
+              recordHeadersAndBody: true,
+              urlBlocklist: [],
+            }}
+          />
           <TRPCReactProvider>
             <JotaiProvider>
               <SidebarProvider>

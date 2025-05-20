@@ -175,6 +175,11 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 
 ### OPTIMIZATION
 
+- [ ] set up analytic + error management (w/ highlight or launchdarkly - in the future)
+
+  - [ ] highlight.io integration in vercel
+  - [ ] highlight.io integration in github
+
 - [ ] optimize "use client" boundaries for less CSR
 - [ ] optimization testing (w/ react-scan)
 
@@ -199,9 +204,7 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 - [ ] separate dbs for production and dev
 - [ ] check auth caching state (not for demo)
 - [ ] error logging (w/ axiom - paid)
-- [ ] error management (w/ sentry)
 - [ ] routing pages (parallel routes)
-- [ ] set up analytics (w/ posthog maybe highlight?)
 - [ ] language option (expand wally ai to be able to give answers in different languages)
 
 ### POST-PRODUCTION
