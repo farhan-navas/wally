@@ -35,7 +35,7 @@ import { api } from "~/trpc/react";
 import { useAuth } from "@clerk/nextjs";
 import { useAtom } from "jotai";
 import { chatDataAtom } from "../atoms";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,14 +44,12 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogPortal,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const state = useAuth();
-  // const apiUtils = api.useUtils();
+  const apiUtils = api.useUtils();
   const [chatData, setChatData] = useAtom(chatDataAtom);
 
   const { data, isLoading } = api.chat.getAllChatHeaders.useQuery(undefined, {
@@ -64,7 +62,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
     onSuccess: (data) => {
       console.log("Chat deleted successfully", data);
       setChatData((prev) => prev.filter((chat) => chat.id !== data.id)); // remove the deleted chat from the chatData atom
-      // void apiUtils.chat.getAllChatHeaders.invalidate(); // invalidate the query to refetch the chat data
+      void apiUtils.chat.getAllChatHeaders.invalidate(); // invalidate the query to refetch the chat data
     },
     onError: (error) => {
       console.error("Failed to delete chat: ", error);
