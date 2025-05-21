@@ -3,8 +3,6 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
-// const PINECONE_MODEL_NAME = "";
-
 export const chatRouter = createTRPCRouter({
   // creates a chat for the user and configures the profile for the current chat and pushes new chat to the db
   createChat: protectedProcedure
@@ -128,7 +126,7 @@ export const chatRouter = createTRPCRouter({
         userId: ctx.session.userId,
       },
       orderBy: {
-        createdAt: "desc",
+        updatedAt: "desc",
       },
       select: {
         id: true,

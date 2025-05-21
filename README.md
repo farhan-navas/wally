@@ -40,7 +40,7 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 
 - **Database**
 
-  - PostgreSQL (local via `start-database.sh`)
+  - PostgreSQL (provisioned by Neon)
   - Prisma ORM (schema, migrations, seeding)
 
 - **Retrieval & Embeddings**
@@ -59,8 +59,8 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 
 - **Observability & Payments**
 
-  - Sentry / Axiom (error logging)
-  - Stripe (plans & webhooks)
+  - Highlight.io (error logging)
+  - Stripe (payment plans & processing)
 
 ## TO-DO LIST
 
@@ -177,13 +177,15 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 
 - [ ] set up analytic + error management (w/ highlight or launchdarkly - in the future)
 
-  - [ ] highlight.io integration in vercel
-  - [ ] highlight.io integration in github
+  - [ ] highlight.io integration in vercel (paid integration - w vercel pro)
+  - [x] highlight.io integration in github
+  - [x] add highlight identify user session
+  - [ ] add specific background traces for particular routes, eg: api call to openai, exclude http overhead
+  - [ ] learn to use highlight efficiently and automate issues for errors
 
 - [ ] optimize "use client" boundaries for less CSR
 - [ ] optimization testing (w/ react-scan)
 
-  - [ ] hook up debugger and record trace/flamegraph with added performance tracing calls
   - [ ] extract out entire chat-home.tsx (and similar pages) to reduce csr
   - [ ] improve page load times
   - [ ] add interactivity to page (make use of suspense boundaries/loading.tsx)
@@ -201,8 +203,8 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
     - [x] delete profile -> removes ref to focusedChatData atom
     - [x] user sends message -> update updatedAt of focusedChatData atom
 
-- [ ] separate dbs for production and dev
-- [ ] check auth caching state (not for demo)
+- [x] separate dbs for production and dev
+- [ ] check auth caching state
 - [ ] error logging (w/ axiom - paid)
 - [ ] routing pages (parallel routes)
 - [ ] language option (expand wally ai to be able to give answers in different languages)

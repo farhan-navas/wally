@@ -28,9 +28,6 @@ import { UploadDropzone } from "~/lib/uploadthing";
 import type { Attachment } from "ai";
 import Image from "next/image";
 
-import { env } from "~/envServer";
-console.log(env);
-
 interface Emotion {
   emotion: string;
   emoji: string;
