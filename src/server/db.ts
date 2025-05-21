@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Pinecone } from "@pinecone-database/pinecone";
 
-import { env } from "~/env";
+import { env } from "~/envServer";
 
 const createPrismaClient = () =>
   new PrismaClient({

@@ -23,9 +23,9 @@ export default function ClerkComponent() {
       setChatData([]);
     }
 
-    let userId = "anonymous";
+    let userId = String(crypto.randomUUID());
     let fullName = "Anon User";
-    let emailId = String(crypto.randomUUID());
+    let emailId = "anonymous";
     let email = "anon@anonymous.com";
     let hasSignedIn = false;
 

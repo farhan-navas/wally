@@ -2,7 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import type { WebhookEvent } from "@clerk/nextjs/server";
 import { api } from "~/trpc/server";
-import { env } from "~/env";
+import { env } from "~/envServer";
 
 interface EmailVerification {
   status: string;

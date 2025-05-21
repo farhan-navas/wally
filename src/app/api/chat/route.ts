@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import "server-only";
 
 import type z from "zod";
