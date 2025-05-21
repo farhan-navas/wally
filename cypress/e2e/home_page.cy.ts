@@ -9,7 +9,7 @@ describe("Navigation - Not Logged In", () => {
     // new url should include "/about"
     cy.url().should("include", "/plans");
 
-    // The new page should contain an h1 with "About"
+    // The new page should contain an h1 with "Pricing"
     cy.get("h2").contains("Pricing");
   });
 
