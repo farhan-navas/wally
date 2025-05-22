@@ -52,7 +52,7 @@ export default function PricingPlan() {
   return (
     <div className="px-6 py-24 sm:py-12 lg:px-8">
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-base/7 font-semibold text-amberTheme-darker">
+        <h2 className="text-xl font-semibold text-amberTheme-darker">
           Pricing
         </h2>
         <p className="mt-2 text-balance text-5xl font-semibold tracking-tight text-amberTheme sm:text-6xl">
@@ -60,8 +60,8 @@ export default function PricingPlan() {
         </p>
       </div>
       <p className="mx-auto mt-6 max-w-2xl text-pretty text-center text-lg font-medium text-gray-600 sm:text-xl/8">
-        Choose an affordable plan that’s packed with the best features for
-        engaging your audience, creating customer loyalty, and driving sales.
+        Unfortunately, you are not signed in to use Wally, Click on the
+        &apos;Sign Up&apos; button above for free Beta access now!
       </p>
       <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl lg:grid-cols-2">
         {tiers.map((tier, tierIdx) => (

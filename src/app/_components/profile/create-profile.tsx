@@ -13,7 +13,7 @@ import { formSchema } from "../schema";
 
 export default function CreateProfile() {
   const router = useRouter();
-  const utils = api.useUtils();
+  const apiUtils = api.useUtils();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,7 +32,7 @@ export default function CreateProfile() {
   const createChatMutation = api.chat.createChat.useMutation({
     onSuccess: (data) => {
       toast.success(`Profile for ${data.name} created successfully!`);
-      void utils.chat.getAllChatHeaders.invalidate();
+      void apiUtils.chat.getAllChatHeaders.invalidate();
       router.push(`/chats/${data.id}`);
     },
     onError: () => {

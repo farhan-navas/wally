@@ -86,6 +86,7 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
 - [ ] display currently selected emotion on frontend
 - [ ] updateProfile display (birthdate and heartLevel does not render default value)
 - [x] link user sessionStorage to jotai state (previously using localStorage)
+- [ ] create
 
 </details>
 
@@ -196,6 +197,8 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
     - [x] update profile -> updates focusedChatData atom (useEffect in app-sidebar)
     - [x] delete profile -> removes ref to focusedChatData atom
     - [x] user sends message -> update updatedAt of focusedChatData atom
+  - [x] update state on delete chat, so that sidebar is updated
+  - [x] update state on create chat, so that ... (both done with tRPC invalidate)
 
 - [ ] separate dbs for production and dev
 - [ ] check auth caching state (not for demo)
