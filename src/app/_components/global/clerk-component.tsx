@@ -22,7 +22,7 @@ export default function ClerkComponent() {
     if (user === null) {
       sessionStorage.removeItem("wally:chatData");
       setChatData([]);
-      void apiUtils.chat.getAllChatHeaders.invalidate(); //invalidate() or cancel() here? adust accordingly
+      void apiUtils.chat.getAllChatHeaders.invalidate(); // TODO invalidate() or cancel() here, find better suited one
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);

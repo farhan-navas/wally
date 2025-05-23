@@ -57,7 +57,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
   const { data, isLoading } = api.chat.getAllChatHeaders.useQuery(undefined, {
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    refetchOnMount: true,
+    refetchOnMount: false,
   });
 
   const deleteChatMutation = api.chat.deleteChat.useMutation({

@@ -84,16 +84,18 @@ Wally helps couples, friends, or colleagues engage in meaningful offline convers
   - [ ] add image/pdf upload functionality (from drive/dropbox etc.)
 - [x] update frontEnd to show 3 different dropdowns for responses
 - [ ] display currently selected emotion on frontend
+  - [ ] store currently selected emotion in state, and change emotion only when users asks to change it
 - [ ] updateProfile display (birthdate and heartLevel does not render default value)
 - [x] link user sessionStorage to jotai state (previously using localStorage)
-- [ ] create
+- [x] create delete chat alert dialog, to confirm with users before deleting chat
+  - [x] makeoverlay does not disappear when alert dialog is closed...
+  - [x] add destructive (red) coloring to alert dialog
 
 </details>
 
 <details>
   <summary><strong>UI/UX</strong></summary>
 
-- [ ] improve alert dialog for deleting chat
 - [ ] make sure ui for all pages is exactly 100vh (on all devices!)
 - [ ] fix create-chat page ui (languages currently greyed out)
 - [ ] make sure scroll area in chat page sticks to the bottom (still buggy for beta)

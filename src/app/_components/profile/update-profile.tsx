@@ -24,6 +24,8 @@ import { useMemoChatData } from "../atoms";
 import { useAtomValue } from "jotai";
 
 export default function UpdateProfile() {
+  const apiUtils = api.useUtils();
+
   const { chats } = useParams();
   const chatId = Array.isArray(chats) ? chats[0] : chats;
 
@@ -44,6 +46,7 @@ export default function UpdateProfile() {
   const updateChatMutation = api.chat.updateChat.useMutation({
     onSuccess: () => {
       toast.success("Profile updated successfully!");
+      void apiUtils.chat.getAllChatHeaders.invalidate();
     },
     onError: () => {
       toast.error("Failed to update profile");
