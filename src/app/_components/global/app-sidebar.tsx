@@ -48,7 +48,6 @@ import {
   AlertDialogPortal,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const state = useAuth();
@@ -160,7 +159,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                         <span>{chat.chatData.chatHeader}</span>
                       </Link>
                     </SidebarMenuButton>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <SidebarMenuAction>
                           <MoreHorizontal />
@@ -194,40 +193,33 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
 
       <AlertDialog
         open={!!deletingChatId}
-        onOpenChange={(isOpen) => {
-          // when radix decides to close (e.g. clicking cancel or outside), clear the id
-          if (!isOpen) setDeletingChatId(null);
+        onOpenChange={(open) => {
+          if (!open) setDeletingChatId(null);
         }}
       >
         <AlertDialogPortal>
-          <AlertDialogOverlay className="fixed inset-0 bg-black/50">
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Are you sure you want to delete this chat?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone, and the chat data will be
-                  permanently deleted!
-                </AlertDialogDescription>
-              </AlertDialogHeader>
+          <AlertDialogOverlay className="fixed inset-0 bg-black/50 data-[state=closed]:pointer-events-none" />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you sure you want to delete this chat?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone, and the chat data will be
+                permanently deleted!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
 
-              <AlertDialogFooter>
-                <AlertDialogCancel
-                  onClick={() => {
-                    setDeletingChatId(null);
-                  }}
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button variant={"destructive"} onClick={handleDeleteChat}>
-                    Continue
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-500"
+                onClick={handleDeleteChat}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
         </AlertDialogPortal>
       </AlertDialog>
 
