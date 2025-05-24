@@ -2,7 +2,7 @@
 
 import { Heart, StopCircle } from "lucide-react";
 import { ChatMessage } from "~/app/_components/message/chat-message";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import { skipToken } from "@tanstack/react-query";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -22,7 +22,7 @@ import { toast } from "sonner";
 
 import UpdateProfile from "../profile/update-profile";
 import { useAtomValue } from "jotai";
-import { useCurrentChatData } from "../atoms";
+import { useMemoChatData } from "../atoms";
 import { marked } from "marked";
 import { UploadDropzone } from "~/lib/uploadthing";
 import type { Attachment } from "ai";
@@ -50,6 +50,8 @@ const PROFILE_COLORS = ["black", "gold", "orange", "violet", "red"];
 const PROFILE_EMOJIS = ["🧊", "👋", "🤝", "🌹", "❤️"];
 
 export default function ChatHome() {
+  const router = useRouter();
+
   // ref object to scroll to the bottom of the chat
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -60,14 +62,32 @@ export default function ChatHome() {
   const { chats } = useParams();
   const chatId = Array.isArray(chats) ? chats[0] : chats;
 
-  // get profile data from focusedChatDatAatom earlier and set UI
-  const focusedChatData = useCurrentChatData(chatId!);
+  // get profile data from focusedChatDataAtom earlier and set UI
+  const focusedChatData = useMemoChatData(chatId!);
   const focusedChat = useAtomValue(focusedChatData);
   const chatData = focusedChat?.chatData;
 
-  const redHeartLevel = chatData?.heartLevel;
-  const relationship = chatData?.relationship;
-  const name = chatData?.name;
+  const {
+    data: queriedChatData,
+    isLoading,
+    isError,
+  } = api.chat.getChat.useQuery(chatId ? { chatId } : skipToken, {
+    enabled: !chatData, // only fetch if atom is empty
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  useEffect(() => {
+    if (!isLoading && (isError || (!focusedChat && !queriedChatData))) {
+      router.replace("/");
+      toast.error(`Unable to load conversation ${chatId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedChat, queriedChatData, isError, isLoading, router]);
+
+  const redHeartLevel = chatData?.heartLevel ?? queriedChatData?.heartLevel;
+  const relationship = chatData?.relationship ?? queriedChatData?.relationship;
+  const name = chatData?.name ?? queriedChatData?.name;
   const grayHeartLevel = redHeartLevel ? 5 - redHeartLevel : 0;
   const profileColor = PROFILE_COLORS[redHeartLevel - 1];
   const profileEmoji = PROFILE_EMOJIS[redHeartLevel - 1];

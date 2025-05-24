@@ -35,29 +35,48 @@ import { api } from "~/trpc/react";
 import { useAuth } from "@clerk/nextjs";
 import { useAtom } from "jotai";
 import { chatDataAtom } from "../atoms";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const state = useAuth();
+  const apiUtils = api.useUtils();
   const [chatData, setChatData] = useAtom(chatDataAtom);
 
   const { data, isLoading } = api.chat.getAllChatHeaders.useQuery(undefined, {
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     refetchOnMount: false,
   });
 
   const deleteChatMutation = api.chat.deleteChat.useMutation({
     onSuccess: (data) => {
       console.log("Chat deleted successfully", data);
+      setChatData((prev) => prev.filter((chat) => chat.id !== data.id)); // remove the deleted chat from the chatData atom
+      void apiUtils.chat.getAllChatHeaders.invalidate(); // invalidate the query to refetch the chat data in sidebar
     },
     onError: (error) => {
       console.error("Failed to delete chat: ", error);
     },
   });
 
-  function deleteChat(chatId: string) {
-    deleteChatMutation.mutate({ chatId });
-  }
+  const handleDeleteChat = () => {
+    if (deletingChatId) {
+      deleteChatMutation.mutate({ chatId: deletingChatId });
+      setDeletingChatId(null);
+    }
+  };
 
   useEffect(() => {
     // set all chatIds and chatData to the atoms, when new data arrives
@@ -97,6 +116,8 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
       setChatData(chatData);
     }
   }, [data, setChatData]);
+
+  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
 
   return (
     <Sidebar>
@@ -138,20 +159,20 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                         <span>{chat.chatData.chatHeader}</span>
                       </Link>
                     </SidebarMenuButton>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <SidebarMenuAction>
                           <MoreHorizontal />
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side="right" align="start">
-                        <DropdownMenuItem>
-                          <span>Edit Profile</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span onClick={() => deleteChat(chat.id)}>
-                            Delete Profile
-                          </span>
+                        <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setDeletingChatId(chat.id);
+                          }}
+                        >
+                          Delete Profile
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -169,6 +190,39 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <AlertDialog
+        open={!!deletingChatId}
+        onOpenChange={(open) => {
+          if (!open) setDeletingChatId(null);
+        }}
+      >
+        <AlertDialogPortal>
+          <AlertDialogOverlay className="fixed inset-0 bg-black/50 data-[state=closed]:pointer-events-none" />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you sure you want to delete this chat?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone, and the chat data will be
+                permanently deleted!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-500"
+                onClick={handleDeleteChat}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogPortal>
+      </AlertDialog>
+
       <SidebarFooter className="mb-4">
         <SidebarMenu>
           <SidebarMenuItem key="upgrade-plan" className="mx-auto">

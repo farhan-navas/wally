@@ -9,10 +9,13 @@ import { useSetAtom } from "jotai";
 import { Button } from "~/components/ui/button";
 import { chatDataAtom } from "../atoms";
 import { useEffect } from "react";
+import { api } from "~/trpc/react";
 
 import { H } from "@highlight-run/next/client";
 
 export default function ClerkComponent() {
+  const apiUtils = api.useUtils();
+
   // this component is used to render the sign in button and user button
   const { user } = useUser();
   const setChatData = useSetAtom(chatDataAtom);
@@ -21,6 +24,7 @@ export default function ClerkComponent() {
     if (user === null) {
       sessionStorage.removeItem("wally:chatData");
       setChatData([]);
+      void apiUtils.chat.getAllChatHeaders.invalidate(); // TODO invalidate() or cancel() here, find better suited one
     }
 
     let userId = String(crypto.randomUUID());
